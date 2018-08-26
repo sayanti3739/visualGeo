@@ -55,7 +55,7 @@ function earthquakespts()
 
     var magmax = sqrt(pow(10,10));
 
-    var d = map(mag, 0, magmax, 0, 2000);
+    var d = map(mag, 0, magmax, 0, 950);
 
     fill(255,0,0);
     ellipse(x,y,d,d);
