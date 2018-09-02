@@ -12,7 +12,7 @@ var volcanos;
 function preload()
 {
   mapimg = loadImage('https://api.mapbox.com/styles/v1/mapbox/dark-v9/static/0,0,1,0,0/1024x512?access_token=pk.eyJ1IjoicmlkaGltYTQ3IiwiYSI6ImNqajczNnlxbjAxZGgzcG1uYW9kOXg3NmoifQ.R4n2Q4sXBbBgV2VxKMGglg');
-  earthquakes = loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson');
+  earthquakes = loadJSON("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson");
   volcanos = loadJSON("https://data.humdata.org/dataset/a60ac839-920d-435a-bf7d-25855602699d/resource/7234d067-2d74-449a-9c61-22ae6d98d928/download/volcano.json");
 }
 
@@ -54,10 +54,10 @@ function earthquakespts()
 
     var magmax = sqrt(pow(10,10));
 
-    var d = map(mag, 0, magmax, 0, 800);
+    var r = map(mag, 0, magmax, 0, 500);
 
     fill(255,0,0);
-    ellipse(x,y,d,d);
+    ellipse(x,y,2*r,2*r);
 
   }
 }
@@ -66,29 +66,50 @@ function volcanospts(){
   translate(width/2, height/2);
   imageMode(CENTER);
   image(mapimg,0,0);
-  
+
   var cx = markX(0);
   var cy = markY(0);
-
+ 
   for(var i=0; i<volcanos.features.length; i++)
   {
 	lat= volcanos.features[i].properties.Latitude;
 	lon= volcanos.features[i].properties.Longitude;
-
 	var x = markX(lon) - cx;
 	var y = markY(lat) - cy;
+	var activity = volcanos.features[i].properties.risk;
+	if(activity=="NULL"){
+		noStroke();
+		fill(255, 246, 0,150);
+		triangle(x-3,y,x,y-6,x+3,y);
+	}
 
-	stroke(130,50,50);
-	strokeWeight(.5);
-	fill (230,10,50,200);
-	triangle(x-3,y,x,y-6,x+3,y);
-  }
+	else if(activity=="1"){
+		noStroke();
+		fill(255, 119, 0,200)
+		triangle(x-3,y,x,y-6,x+3,y);
+
+	}
+	else if(activity=="2"){
+		noStroke();
+		fill(221, 101, 15,200);
+		triangle(x-3,y,x,y-6,x+3,y);
+
+	}
+	else{
+		noStroke();
+		fill(255, 0, 0);
+		triangle(x-5,y,x,y-10,x+5,y);
+	}
+  
+ }
 
 }
 
 function setup() 
 {
+
   var c=createCanvas(1024,512);
+
   c.style("width","1024px");
   c.style("margin","40px 100px 20px 50px");
   translate(width/2, height/2);
@@ -102,3 +123,4 @@ function setup()
   button_1.mousePressed(earthquakespts);
   button_2.mousePressed(volcanospts);
 }
+
