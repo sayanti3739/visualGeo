@@ -12,7 +12,7 @@ var volcanos;
 function preload()
 {
   mapimg = loadImage('https://api.mapbox.com/styles/v1/mapbox/dark-v9/static/0,0,1,0,0/1024x512?access_token=pk.eyJ1IjoicmlkaGltYTQ3IiwiYSI6ImNqajczNnlxbjAxZGgzcG1uYW9kOXg3NmoifQ.R4n2Q4sXBbBgV2VxKMGglg');
-  earthquakes = loadStrings('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.csv');
+  earthquakes = loadJSON('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson');
   volcanos = loadJSON("https://data.humdata.org/dataset/a60ac839-920d-435a-bf7d-25855602699d/resource/7234d067-2d74-449a-9c61-22ae6d98d928/download/volcano.json");
 }
 
@@ -41,12 +41,11 @@ function earthquakespts()
   var cx = markX(0);
   var cy = markY(0);
 
-  for(var i = 0; i<earthquakes.length; i++)
+  for(var i = 0; i<earthquakes.features.length; i++)
   {
-    var data = earthquakes[i].split(/,/);
-    clon = data[2];
-    clat = data[1];
-    var mag = data[4];
+    clon = earthquakes.features[i].geometry.coordinates[0];
+    clat = earthquakes.features[i].geometry.coordinates[1];
+    var mag = earthquakes.features[i].properties.mag;
     var x = markX(clon)-cx;
     var y = markY(clat)-cy;
 
@@ -55,7 +54,7 @@ function earthquakespts()
 
     var magmax = sqrt(pow(10,10));
 
-    var d = map(mag, 0, magmax, 0, 950);
+    var d = map(mag, 0, magmax, 0, 800);
 
     fill(255,0,0);
     ellipse(x,y,d,d);
